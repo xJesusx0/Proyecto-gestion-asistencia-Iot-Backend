@@ -18,6 +18,10 @@ Session(app)
 CORS(app, supports_credentials=True)
 mysql = MySQL(app)
 
+@app.route('/')
+def index():
+    return 'hola mundo'
+
 auth_bp.mysql = mysql
 admin_bp.mysql = mysql
 students_bp.mysql = mysql
