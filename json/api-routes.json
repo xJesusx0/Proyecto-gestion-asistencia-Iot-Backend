@@ -1,0 +1,19 @@
+{
+    "estudiante": [
+        "get-modules"
+    ],
+    "profesor": [
+        ""
+    ],
+    "administrador": [
+        "administrators",
+        "add-student",
+        "upload-and-register-users",
+        "get-users",
+        "get-user-data",
+        "get-modules",
+        "get-teachers",
+        "get-classrooms",
+        "add-group"
+    ]
+}

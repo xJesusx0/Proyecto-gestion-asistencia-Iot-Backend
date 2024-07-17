@@ -1,0 +1,30 @@
+{
+    "estudiante": [
+        "students.html",
+        "students",
+        "history",
+        "history.html",
+        "justificacion",
+        "justificacion.html"
+    ],
+    "profesor": [
+        "teachers.html",
+        "teachers",
+        "students-list.html",
+        "students-list"
+    ],
+    "administrador": [
+        "administrators.html",
+        "administrators",
+        "add-student.html",
+        "add-student",
+        "upload-and-register",
+        "upload-and-register.html",
+        "users-list.html",
+        "users-list",
+        "user-info",
+        "user-info.html",
+        "create-group",
+        "create-group.html"
+    ]
+}
