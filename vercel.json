@@ -1,8 +1,5 @@
 {
     "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/app/__init__"
-        }
+      { "source": "/(.*)", "destination": "/app/__init__" }
     ]
 }
