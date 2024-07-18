@@ -3,11 +3,11 @@ from flask_cors import CORS
 from flask_session import Session
 import os
 from flask_mysqldb import MySQL
-from api.config import Config
+from app.config import Config
 
-from api.routes.auth import auth_bp
-from api.routes.administrators import admin_bp
-from api.routes.students import students_bp
+from app.routes.auth import auth_bp
+from app.routes.administrators import admin_bp
+from app.routes.students import students_bp
 
 app = Flask(__name__)
 
