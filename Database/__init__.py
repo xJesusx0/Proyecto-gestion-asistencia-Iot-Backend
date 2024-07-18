@@ -1,22 +1,39 @@
 from functools import wraps
-from MySQLdb.cursors import DictCursor
 import json
+
+from pymysql.cursors import DictCursor 
+import pymysql
 from datetime import timedelta
+from api.config import Config
+
+def get_db_connection():
+    connection = pymysql.connect(
+        host=Config.MYSQL_HOST,
+        user=Config.MYSQL_USER,
+        password=Config.MYSQL_PASSWORD,
+        db=Config.MYSQL_DB,
+        cursorclass=DictCursor
+    )
+    return connection
+
 
 def handle_database_operations(func: callable) -> callable:
     @wraps(func)
-    def wrapper(mysql, *args, **kwargs):
-        cursor = mysql.connection.cursor(DictCursor)
+    def wrapper(*args, **kwargs):
+        connection = get_db_connection()
+        cursor = connection.cursor()
         try:
-            result = func(mysql, cursor, *args, **kwargs)
-            mysql.connection.commit()
+            result = func(connection, cursor, *args, **kwargs)
+            connection.commit()
             return result
         except Exception as error:
-            mysql.connection.rollback()
-            print("Database error:", error)
+            connection.rollback()
+            print("error:", error)
         finally:
             cursor.close()
+            connection.close()
     return wrapper
+
 
 def valid_table(tablename:str):
     tables = {

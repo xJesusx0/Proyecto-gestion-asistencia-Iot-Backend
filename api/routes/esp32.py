@@ -68,7 +68,7 @@ def set_attendance():
     day = 'jueves'
     classroom_id = 4
 
-    group = get_group(esp32_bp.mysql,day,classroom_id,current_time)
+    group = get_group(day,classroom_id,current_time)
 
     if not group:
         return jsonify({'error':'Ningun grupo asignado a esta hora'}),404

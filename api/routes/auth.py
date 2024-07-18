@@ -1,7 +1,10 @@
 from flask import Blueprint, request, jsonify, session
-from ..config import token_required
-from Database.auth import *
+
 from . import web_routes
+
+from api.config import token_required
+
+from Database.auth import *
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -9,12 +12,12 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     request_body = request.get_json()
 
-    response = validateLogin(auth_bp.mysql, request_body)
+    response = validateLogin(request_body)
 
     if response is None:
         return jsonify({'error': 'Datos incorrectos'}), 401
 
-    roles = get_roles(auth_bp.mysql, response['id_usuario'])
+    roles = get_roles(response['id_usuario'])
     data = {
         'user-data': response,
         'roles': roles
