@@ -15,6 +15,45 @@ def get_user(mysql,cursor,user_id):
     return response
 
 @handle_database_operations
+def count_students(mysql,cursor):
+    cursor.execute('SELECT COUNT(*) as ammount FROM usuarios_roles WHERE id_rol = 3')
+    
+    response = cursor.fetchone()
+    if response:
+        return response
+
+    return None
+
+@handle_database_operations
+def count_teachers(mysql,cursor):
+    cursor.execute('SELECT COUNT(*) as ammount FROM usuarios_roles WHERE id_rol = 2')
+    
+    response = cursor.fetchone()
+    if response:
+        return response
+
+    return None
+
+@handle_database_operations
+def count_admins(mysql,cursor):
+    cursor.execute('SELECT COUNT(*) as ammount FROM usuarios_roles WHERE id_rol = 1')
+    response = cursor.fetchone()
+
+    if response:
+        return response
+
+    return None
+
+@handle_database_operations
+def count_users(mysql,cursor):
+    cursor.execute('SELECT COUNT(*) as ammount FROM usuarios')
+    response = cursor.fetchone()
+    if response:
+        return response
+
+    return None
+
+@handle_database_operations
 def get_all_modules(mysql,cursor):
     cursor.execute('SELECT * FROM modulos')
     response = cursor.fetchall()
