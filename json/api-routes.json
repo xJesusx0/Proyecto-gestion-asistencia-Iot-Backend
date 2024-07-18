@@ -14,6 +14,7 @@
         "get-modules",
         "get-teachers",
         "get-classrooms",
-        "add-group"
+        "add-group",
+        "get-count-roles"
     ]
 }

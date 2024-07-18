@@ -14,7 +14,7 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY')
     MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
-SECRET_TOKEN = '1234'
+SECRET_TOKEN = os.getenv('SECRET_TOKEN')
 
 def valid_token(token):
     return token == SECRET_TOKEN
@@ -42,8 +42,6 @@ def valid_login(func):
         return func(*args, **kwargs)
 
     return wrapper
-
-
 
 def valid_role(route:str):
     def decorator(func:callable):

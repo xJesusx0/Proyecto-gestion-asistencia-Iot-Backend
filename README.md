@@ -54,21 +54,14 @@ Este proyecto utiliza tecnología IoT para gestionar y monitorizar la asistencia
      ```bash
      cd Proyecto-gestion-asistencia-Iot/Backend/app/
      ```
-   - Crea el archivo de configuración `config.py` basado en `config-example.py`:
-     ```python
-     class Config:
-         SESSION_PERMANENT = False
-         SESSION_TYPE = 'filesystem'
-         MYSQL_HOST = 'localhost'
-         MYSQL_USER = 'root'
-         MYSQL_PASSWORD = 'contraseña'  # Tu contraseña de MySQL
-         MYSQL_DB = 'proyecto' #nombre de la base de datos
-         SECRET_KEY = 'secret'
-
-      SECRET_TOKEN = 'token'  # Poner el token secreto
-
-      def valid_token(token):
-         return token == SECRET_TOKEN
+   - Crea el archivo de configuración `.env`:
+     ```
+      MYSQL_HOST = localhost #Tu host
+      MYSQL_USER = root # Tu usuario (por defecto es root)
+      MYSQL_DB = nombre_db # El nombre de la base de datos
+      SECRET_KEY = secret # una clave secreta (por defecto es secret)
+      MYSQL_PASSWORD = contraseña # Tu contraseña de mysql
+      SECRET_TOKEN = token # token de autentificacion (por defecto es 1234)
      ```
 
 6. **Iniciar el backend:**
