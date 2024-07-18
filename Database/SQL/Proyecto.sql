@@ -80,9 +80,10 @@ CREATE TABLE grupo (
 
 CREATE TABLE matricula (
   id_grupo VARCHAR(100),
-  id_estudiante VARCHAR(40),
+  id_modulo VARCHAR(100),
   periodo VARCHAR(40),
-  PRIMARY KEY (id_grupo, id_estudiante,periodo),
+  id_estudiante VARCHAR(40),
+  PRIMARY KEY (id_grupo, id_modulo,periodo,id_estudiante),
   FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo),
   FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante)
 );
@@ -91,12 +92,17 @@ CREATE TABLE asistencias (
   id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
   id_estudiante VARCHAR(40),
   id_grupo VARCHAR(100),
+  id_modulo VARCHAR(100),
+  periodo VARCHAR(100),
   fecha DATE,
   hora_llegada TIME,
   estado VARCHAR(50),
   FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante),
-  FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo)
+  FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo),
+  FOREIGN KEY (id_modulo) REFERENCES modulos(id_modulo),
+  UNIQUE (id_estudiante, id_grupo, id_modulo, periodo, fecha)
 );
+
 
 CREATE TABLE tipo_de_inasistencia (
   id_tipo INT AUTO_INCREMENT PRIMARY KEY,
@@ -119,5 +125,6 @@ CREATE TABLE justificaciones (
   id_justificacion INT PRIMARY KEY,
   ruta_archivo VARCHAR(255),
   id_inasistencia INT,
+  descripcion VARCHAR(255),
   FOREIGN KEY (id_inasistencia) REFERENCES inasistencia(id_inasistencia)
 );
