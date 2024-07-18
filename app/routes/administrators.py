@@ -225,3 +225,19 @@ def upload_and_register_users():
 
     return jsonify({'response': 'ok', 'data': users_list}), 200
 
+@admin_bp.route('/get-count-roles')
+@token_required
+@valid_login
+@valid_role('get-count-roles')
+def get_count_roles():
+    student_count = count_students(admin_bp.mysql)
+    teacher_count = count_teachers(admin_bp.mysql)
+    admin_count = count_admins(admin_bp.mysql)
+    users_count = count_users(admin_bp.mysql)
+
+    return jsonify({
+        'estudiantes': student_count['ammount'],
+        'profesores': teacher_count['ammount'],
+        'administradores': admin_count['ammount'],
+        'usuarios':users_count['ammount']
+    })
