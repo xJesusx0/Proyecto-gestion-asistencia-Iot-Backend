@@ -42,3 +42,15 @@ def is_time_overlap(mysql, cursor, classroom, weekday, start_time, end_time):
         return res
     
     return None
+
+@handle_database_operations
+def get_group(mysql,cursor,day:str,classroom_id:int,time:str):
+    cursor.execute('SELECT * FROM grupo WHERE id_salon = %s AND dia_semana = %s AND hora_inicio <= %s AND hora_fin >= %s',(classroom_id,day,time,time))
+    response = cursor.fetchone()
+
+    if response:
+        return response
+    
+    return None
+
+#select * from matricula where id_estudiante = '1234' AND id_modulo = 'com35' and periodo = '2024-2' and id_grupo = 'sin_g1';
