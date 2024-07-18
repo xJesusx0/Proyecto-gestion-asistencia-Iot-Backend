@@ -17,7 +17,7 @@ app.config.from_object(Config)
 
 Session(app)
 CORS(app, supports_credentials=True)
-
+ 
 @app.errorhandler(404)
 def page_not_found(e):
     return jsonify({'error':404,'response':'Ruta no encontrada'}), 404
