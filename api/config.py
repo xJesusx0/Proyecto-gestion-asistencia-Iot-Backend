@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 class Config:
-    SESSION_PERMANENT = False
+    SESSION_PERMANENT = True
     SESSION_TYPE = 'filesystem'
     MYSQL_HOST = os.getenv('MYSQL_HOST')
     MYSQL_USER = os.getenv('MYSQL_USER')
