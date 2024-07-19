@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify, session
 
 from ..config import *
 from Database import TimedeltaEncoder
-from Database.groups import get_group
+from Database.groups import get_group,student_has_group
 
 esp32_bp = Blueprint('esp32', __name__, url_prefix='/esp32')
 
@@ -68,22 +68,26 @@ def set_attendance():
     day = 'jueves'
     classroom_id = 4
 
-    group = get_group(day,classroom_id,current_time)
+    group_exists = get_group(day,classroom_id,current_time)
 
-    if not group:
+    if not group_exists:
         return jsonify({'error':'Ningun grupo asignado a esta hora'}),404
 
-    group_json = json.dumps(group, cls=TimedeltaEncoder)
+    group_json = json.dumps(group_exists, cls=TimedeltaEncoder)
     group_json = json.loads(group_json)
 
     group_id = group_json.get('id_grupo')
     module_id = group_json.get('id_modulo')
     period = group_json.get('periodo')
 
+    has_group = student_has_group(student_id,module_id,period,group_id)
+
+    if not has_group:
+        return jsonify({'error':'el usuario no pertenece a este grupo'}),403
     
     # print(day)
     # print(current_time)
     # print(current_date)
     # print(current_date)
 
-    return jsonify({'response':'ruta del esp','hora':current_time,'fecha':current_date,'dia':day})
+    return jsonify({'response':'el usuario si tiene ese grupo','hora':current_time,'fecha':current_date,'dia':day,'grupo':group_json}),200
