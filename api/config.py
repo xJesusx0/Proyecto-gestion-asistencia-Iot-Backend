@@ -7,22 +7,38 @@ import redis
 
 load_dotenv()
 
-class Config:
-    
-    MYSQL_HOST = os.getenv('MYSQL_HOST')
-    MYSQL_USER = os.getenv('MYSQL_USER')
-    MYSQL_DB = os.getenv('MYSQL_DB')
-    MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+env = os.getenv('ENVIORMENT')
 
-    SESSION_PERMANENT = False
+if env == 'production':
+    class Config:
+        
+        MYSQL_HOST = os.getenv('MYSQL_HOST')
+        MYSQL_USER = os.getenv('MYSQL_USER')
+        MYSQL_DB = os.getenv('MYSQL_DB')
+        MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
-    SESSION_TYPE = 'redis'
-    SESSION_REDIS = redis.StrictRedis(
-        host=os.getenv('REDIS_HOST'),
-        port=int(os.getenv('REDIS_PORT')),
-        password=os.getenv('REDIS_PASSWORD')
-    )
-    SECRET_KEY = os.getenv('SECRET_KEY')
+        SESSION_PERMANENT = False
+
+        SESSION_TYPE = 'redis'
+        SESSION_REDIS = redis.StrictRedis(
+            host=os.getenv('REDIS_HOST'),
+            port=int(os.getenv('REDIS_PORT')),
+            password=os.getenv('REDIS_PASSWORD')
+        )
+        SECRET_KEY = os.getenv('SECRET_KEY')
+
+else:
+    class Config:
+        
+        MYSQL_HOST = os.getenv('MYSQL_HOST')
+        MYSQL_USER = os.getenv('MYSQL_USER')
+        MYSQL_DB = os.getenv('MYSQL_DB')
+        MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+
+        SESSION_PERMANENT = False
+
+        SESSION_TYPE = 'filesystem'
+        SECRET_KEY = os.getenv('SECRET_KEY')
 
 SECRET_TOKEN = os.getenv('SECRET_TOKEN')
 
