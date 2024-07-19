@@ -4,21 +4,25 @@ from .routes import api_routes
 from dotenv import load_dotenv
 import os
 import redis
+
 load_dotenv()
 
 class Config:
-    SESSION_PERMANENT = False
-    SESSION_TYPE = 'filesystem'
+    
     MYSQL_HOST = os.getenv('MYSQL_HOST')
     MYSQL_USER = os.getenv('MYSQL_USER')
     MYSQL_DB = os.getenv('MYSQL_DB')
+    MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+
+    SESSION_PERMANENT = False
+
+    SESSION_TYPE = 'redis'
     SESSION_REDIS = redis.StrictRedis(
         host=os.getenv('REDIS_HOST'),
         port=int(os.getenv('REDIS_PORT')),
         password=os.getenv('REDIS_PASSWORD')
     )
     SECRET_KEY = os.getenv('SECRET_KEY')
-    MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
 SECRET_TOKEN = os.getenv('SECRET_TOKEN')
 
