@@ -53,4 +53,11 @@ def get_group(mysql,cursor,day:str,classroom_id:int,time:str):
     
     return None
 
-#select * from matricula where id_estudiante = '1234' AND id_modulo = 'com35' and periodo = '2024-2' and id_grupo = 'sin_g1';
+@handle_database_operations
+def student_has_group(mysql,cursor,student_id,module_id,period,group_id):
+    cursor.execute('select * from matricula where id_estudiante = %s AND id_modulo = %s and periodo = %s and id_grupo = %s',(student_id,module_id,period,group_id))
+    response = cursor.fetchall()
+    if response:
+        return response
+    
+    return None
