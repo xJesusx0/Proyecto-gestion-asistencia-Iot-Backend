@@ -84,3 +84,9 @@ def insert_by_csv(mysql,cursor,users_list:tuple,tablename:str):
         cursor.executemany(query,users_list)
     except Exception as e:
         return e
+    
+@handle_database_operations
+def update_user_info(mysql,cursor,user_id, names, lastnames, email, phone):
+    cursor.execute('UPDATE usuarios SET nombres = %s, apellidos = %s, correo = %s, numero_telefonico = %s WHERE id_usuario = %s',(names,lastnames,email,phone,user_id))
+
+    return 'ok1'
