@@ -4,7 +4,8 @@
     ],
     "profesor": [
         "get-teacher-groups",
-        "get-groups-details"
+        "get-group-details",
+        "get-students-by-group"
     ],
     "administrador": [
         "administrators",
