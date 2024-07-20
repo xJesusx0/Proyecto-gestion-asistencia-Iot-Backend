@@ -89,18 +89,16 @@ CREATE TABLE matricula (
 );
 
 CREATE TABLE asistencias (
-  id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
   id_estudiante VARCHAR(40),
   id_grupo VARCHAR(100),
   id_modulo VARCHAR(100),
   periodo VARCHAR(100),
   fecha DATE,
   hora_llegada TIME,
-  estado VARCHAR(50),
+  PRIMARY KEY (id_estudiante, id_grupo, id_modulo, periodo, fecha),
   FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante),
   FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo),
-  FOREIGN KEY (id_modulo) REFERENCES modulos(id_modulo),
-  UNIQUE (id_estudiante, id_grupo, id_modulo, periodo, fecha)
+  FOREIGN KEY (id_modulo) REFERENCES modulos(id_modulo)
 );
 
 
