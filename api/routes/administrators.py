@@ -1,6 +1,7 @@
 import io
 import csv
 import json
+import re
 from datetime import datetime
 
 from flask import Blueprint, request, jsonify, session
@@ -19,6 +20,14 @@ admin_bp = Blueprint('admin',__name__,url_prefix='/admin')
 
 def format_time(time_str:str):
     return datetime.strptime(time_str, '%H:%M').strftime('%H:%M:%S')
+
+def validate_email(email):
+    email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+    return re.match(email_pattern, email) is not None
+
+def validate_phone(phone):
+    phone_pattern = r'^\d{10}$'
+    return re.match(phone_pattern, phone) is not None
 
 def valid_csv(stream,table:set):
     stream.seek(0)
@@ -238,3 +247,34 @@ def get_count_roles():
         'administradores': admin_count['ammount'],
         'usuarios':users_count['ammount']
     })
+
+
+@admin_bp.route('/update-user',methods = ['PUT'])
+@token_required
+@valid_login
+@valid_role('update-user')
+def update_user():
+    request_body = request.get_json()
+
+    if not request_body:
+        return jsonify({'error': 'No se recibió ningún dato.'}), 400
+
+    user_id = request_body.get('id')
+    names = request_body.get('nombres')
+    lastnames = request_body.get('apellidos')
+    email = request_body.get('correo')
+    phone = request_body.get('telefono')
+
+    if not all([user_id, names, lastnames, email, phone]):
+        return jsonify({'error': 'Todos los campos son requeridos.'}), 400
+
+    if not validate_email(email):
+        return jsonify({'error': 'Correo electrónico no válido.'}), 400
+
+    if not validate_phone(phone):
+        return jsonify({'error': 'Número de teléfono no válido.'}), 400
+
+    update_user_info(user_id, names, lastnames, email, phone)
+
+    return jsonify({'success': 'Datos recibidos y validados correctamente.'}), 200
+
