@@ -11,6 +11,6 @@ students_bp = Blueprint('students', __name__, url_prefix='/students')
 def get_modules():
 
     student_id = session['user-id']
-    groups = get_modules_by_id(students_bp.mysql,student_id)    
+    groups = get_modules_by_id(student_id)    
     return jsonify(groups),200
 
