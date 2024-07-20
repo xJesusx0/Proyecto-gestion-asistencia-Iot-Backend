@@ -64,6 +64,9 @@ def student_has_group(mysql,cursor,student_id,module_id,period,group_id):
 
 @handle_database_operations
 def get_group_details(mysql,cursor,group_id,module_id,period):
-    cursor.execute('select grupo.*,modulos.nombre,salones.nombre,salones.sede from grupo join modulos on grupo.id_modulo = modulos.id_modulo join salones on grupo.id_salon = salones.id_salon where group.id_grupo = %s AND group.id_modulo = %s AND periodo = %s',(group_id,module_id,period))
-    response = cursor.fetchall()
-    return response
+    cursor.execute('select grupo.*,modulos.nombre,salones.nombre,salones.sede from grupo join modulos on grupo.id_modulo = modulos.id_modulo join salones on grupo.id_salon = salones.id_salon where grupo.id_grupo = %s AND grupo.id_modulo = %s AND periodo = %s',(group_id,module_id,period))
+    response = cursor.fetchone()
+    if response:
+        return response
+    
+    return None
