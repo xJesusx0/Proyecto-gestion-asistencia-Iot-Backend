@@ -1,6 +1,7 @@
 {
     "estudiante": [
-        "get-student-modules"
+        "get-student-modules",
+        "get-student-attendances-by-group"
     ],
     "profesor": [
         "get-teacher-groups",
@@ -17,6 +18,7 @@
         "get-teachers",
         "get-classrooms",
         "add-group",
-        "get-count-roles"
+        "get-count-roles",
+        "update-user"
     ]
 }
