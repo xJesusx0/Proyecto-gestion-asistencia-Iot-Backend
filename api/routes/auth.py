@@ -18,16 +18,26 @@ def login():
         return jsonify({'error': 'Datos incorrectos'}), 401
 
     roles = get_roles(response['id_usuario'])
-    data = {
-        'user-data': response,
-        'roles': roles
-    }
+    
     
     session['logged-in'] = True
     session['user-id'] = response['id_usuario']
     if len(roles) == 1:
         session['role'] = roles[0]['nombre'].lower()
 
+    data_to_send = {
+        'id_usuario':response.get('id_usuario'),
+        'correo':response.get('correo'),
+        'nombres':response.get('nombres'),
+        'apellidos':response.get('apellidos')
+    }
+
+    data = {
+        'user-data': data_to_send,
+        'roles': roles
+    }
+
+    print(data)
     print(session)
     return jsonify(data), 200
 
