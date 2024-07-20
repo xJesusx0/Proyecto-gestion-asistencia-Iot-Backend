@@ -55,3 +55,8 @@ class TimedeltaEncoder(json.JSONEncoder):
         if isinstance(obj, timedelta):
             return str(obj)
         return super().default(obj)
+
+def encode_time(raw_json):
+    encoded_json = json.dumps(raw_json, cls=TimedeltaEncoder)
+    encoded_json = json.loads(encoded_json)
+    return encoded_json
