@@ -10,8 +10,8 @@
     "profesor": [
         "teachers.html",
         "teachers",
-        "students-list.html",
-        "students-list"
+        "group-info.html",
+        "group-info"
     ],
     "administrador": [
         "administrators.html",
@@ -25,6 +25,8 @@
         "user-info",
         "user-info.html",
         "create-group",
-        "create-group.html"
+        "create-group.html",
+        "group-info.html",
+        "group-info"
     ]
 }

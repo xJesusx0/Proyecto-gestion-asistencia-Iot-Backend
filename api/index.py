@@ -10,6 +10,7 @@ from api.routes.auth import auth_bp
 from api.routes.administrators import admin_bp
 from api.routes.students import students_bp
 from api.routes.esp32 import esp32_bp
+from api.routes.teachers import teachers_bp
 
 app = Flask(__name__)
 
@@ -26,3 +27,4 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(students_bp)
 app.register_blueprint(esp32_bp)
+app.register_blueprint(teachers_bp)

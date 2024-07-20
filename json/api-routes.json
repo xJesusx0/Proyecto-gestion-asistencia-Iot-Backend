@@ -1,9 +1,10 @@
 {
     "estudiante": [
-        "get-modules"
+        "get-student-modules"
     ],
     "profesor": [
-        " "
+        "get-teacher-groups",
+        "get-groups-details"
     ],
     "administrador": [
         "administrators",

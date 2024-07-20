@@ -4,7 +4,7 @@ import json
 from flask import Blueprint, request, jsonify, session
 
 from ..config import *
-from Database import TimedeltaEncoder
+from Database import encode_time
 from Database.groups import get_group,student_has_group
 from Database.attendances import attendance_exists,insert_attendance
 
@@ -75,8 +75,7 @@ def set_attendance():
     if not group_exists:
         return jsonify({'error':'Ningun grupo asignado a esta hora'}),404
 
-    group_json = json.dumps(group_exists, cls=TimedeltaEncoder)
-    group_json = json.loads(group_json)
+    group_json = encode_time(group_exists)
 
     group_id = group_json.get('id_grupo')
     module_id = group_json.get('id_modulo')

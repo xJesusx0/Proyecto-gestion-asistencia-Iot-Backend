@@ -7,7 +7,7 @@ from flask import Blueprint, request, jsonify, session
 
 from ..config import *
 
-from Database import valid_table, TimedeltaEncoder
+from Database import valid_table, encode_time
 from Database.encrypt import encrypt
 from Database.auth import get_roles
 from Database.administrators import *
@@ -68,8 +68,7 @@ def get_user_info():
         elif 2 in roles:
             groups = get_groups_by_teachers_id( user_id)
 
-        groups_json = json.dumps(groups, cls=TimedeltaEncoder)
-        groups_json = json.loads(groups_json)
+        groups_json = encode_time(groups)
 
         return jsonify({
             'user_info': user_info,
@@ -142,15 +141,13 @@ def add_group():
     group = group_exists(request_body)
     
     if group != None:
-        group_json = json.dumps(group, cls=TimedeltaEncoder)
-        group_json = json.loads(group_json)
+        group_json = encode_time(group)
         return jsonify({'error':'El grupo ya existe','info' : group_json }),409
 
     overlap = is_time_overlap(request_body['classroom'],request_body['weekday'],request_body['start-time'],request_body['end-time'])
     
     if overlap != None:
-        overlap_json = json.dumps(overlap, cls=TimedeltaEncoder)
-        overlap_json = json.loads(overlap_json)
+        overlap_json = encode_time(overlap)
         return(jsonify({'error':'Cruce de horarios','info':overlap_json})),409
 
     res =  insert_group(request_to_tuple)

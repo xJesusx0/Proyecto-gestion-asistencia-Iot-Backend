@@ -4,10 +4,10 @@ from Database.students import *
 
 students_bp = Blueprint('students', __name__, url_prefix='/students')
 
-@students_bp.route('/get-modules',methods=['GET'])
+@students_bp.route('/get-student-modules',methods=['GET'])
 @token_required
 @valid_login
-@valid_role('get-modules')
+@valid_role('get-student-modules')
 def get_modules():
 
     student_id = session['user-id']
