@@ -3,7 +3,7 @@ import json
 
 from pymysql.cursors import DictCursor 
 import pymysql
-from datetime import timedelta
+from datetime import timedelta, date, datetime
 from api.config import Config
 
 def get_db_connection():
@@ -54,6 +54,8 @@ class TimedeltaEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, timedelta):
             return str(obj)
+        elif isinstance(obj, (date, datetime)):
+            return obj.isoformat()
         return super().default(obj)
 
 def encode_time(raw_json):
