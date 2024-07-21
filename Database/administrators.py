@@ -90,3 +90,16 @@ def update_user_info(mysql,cursor,user_id, names, lastnames, email, phone):
     cursor.execute('UPDATE usuarios SET nombres = %s, apellidos = %s, correo = %s, numero_telefonico = %s WHERE id_usuario = %s',(names,lastnames,email,phone,user_id))
 
     return 'ok1'
+
+@handle_database_operations
+def get_attendances_by_weekday(mysql,cursor):
+    cursor.execute('SELECT grupo.dia_semana, COUNT(*) AS cantidad_asistencias FROM asistencias JOIN grupo ON grupo.id_grupo = asistencias.id_grupo GROUP BY grupo.dia_semana ORDER BY cantidad_asistencias DESC')
+    response = cursor.fetchall()
+
+    return response
+
+@handle_database_operations
+def count_students_by_group(mysql,cursor):
+    cursor.execute('select grupo.id_grupo, count(*) as cantidad_estudiante FROM matricula join grupo on grupo.id_grupo = matricula.id_grupo group by grupo.id_grupo order by cantidad_estudiante desc')
+    response = cursor.fetchall()
+    return response
