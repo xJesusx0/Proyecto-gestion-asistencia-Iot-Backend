@@ -241,6 +241,9 @@ def get_count_roles():
     admin_count = count_admins()
     users_count = count_users()
 
+    print("-######################")
+    print(student_count)
+
     return jsonify({
         'estudiantes': student_count['ammount'],
         'profesores': teacher_count['ammount'],
@@ -277,4 +280,20 @@ def update_user():
     update_user_info(user_id, names, lastnames, email, phone)
 
     return jsonify({'success': 'Datos recibidos y validados correctamente.'}), 200
+
+@admin_bp.route('/get-weekday-attendances')
+@token_required
+@valid_login
+@valid_role('get-weekday-attendances')
+def get_weekday_attendances():
+    attendances = get_attendances_by_weekday()
+    return jsonify(attendances),200
+
+@admin_bp.route('/count-students-by-group')
+@token_required
+@valid_login
+@valid_role('count-students-by-group')
+def count_students_by_groups():
+    students = count_students_by_group()
+    return jsonify(students),200
 
