@@ -19,6 +19,8 @@
         "get-classrooms",
         "add-group",
         "get-count-roles",
-        "update-user"
+        "update-user",
+        "get-weekday-attendances",
+        "count-students-by-group"
     ]
 }
