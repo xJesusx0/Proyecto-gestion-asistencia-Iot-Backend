@@ -65,10 +65,10 @@ def set_attendance():
     day = get_day(day_of_week)
     
     # quitar esto 
-    current_time = '10:30:00'
-    day = 'jueves'
-    classroom_id = 4
-    current_date = '2024-06-18'
+    # current_time = '09:30:00'
+    # day = 'miercoles'
+    # classroom_id = 3
+    # current_date = '2024-07-03'
 
     group_exists = get_group(day,classroom_id,current_time)
 
@@ -91,10 +91,10 @@ def set_attendance():
     if exists_attendance:
         return jsonify({'response':'El usuario ya tiene una asistencia registrada el dia de hoy'}),409
     
-    insert_attendance(student_id,group_id,module_id,period,current_date,current_time)
+    try:
+        insert_attendance(student_id,group_id,module_id,period,current_date,current_time)
+    except Exception as e:
+        return jsonify({'error':'Ha ocurrido un error'}),500
 
-    return jsonify({'response':'el usuario si tiene ese grupo','hora':current_time,'fecha':current_date,'dia':day,'grupo':group_json}),200
-    # print(day)
-    # print(current_time)
-    # print(current_date)
-    # print(current_date)
+
+    return jsonify({'response':'Asistencia insertada correctamente','hora':current_time,'fecha':current_date,'dia':day,'grupo':group_json}),200
