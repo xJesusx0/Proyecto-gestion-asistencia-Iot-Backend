@@ -20,4 +20,4 @@ def get_attendances_by_id(mysql,cursor,student_id,group_id,module_id,period):
     return None
 @handle_database_operations
 def insert_attendance(mysql,cursor,student_id,group_id,module_id,period,date,time):
-    return 'ok'
+    cursor.execute('INSERT INTO asistencias (id_estudiante, id_grupo, id_modulo, periodo, fecha, hora_llegada) VALUES (%s, %s, %s, %s, %s, %s)',(student_id,group_id,module_id,period,date,time))
