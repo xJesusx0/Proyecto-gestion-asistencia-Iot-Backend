@@ -4,7 +4,8 @@ import json
 import re
 from datetime import datetime
 
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from ..config import *
 
@@ -42,18 +43,17 @@ def valid_csv(stream,table:set):
     return valid_list
 
 @admin_bp.route('/get-users')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-users')
 def get_users():
-    print(session)
     users = get_all_users()
     if not users:
         return jsonify({'error':'Ha ocurrido un error'})
     return jsonify(users),200
 
 @admin_bp.route('/get-user-data')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-user-data')
 def get_user_info():
@@ -90,7 +90,7 @@ def get_user_info():
 
 
 @admin_bp.route('/get-modules')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-modules')
 def get_modules():
@@ -98,7 +98,7 @@ def get_modules():
     return jsonify(modules)
 
 @admin_bp.route('/get-teachers')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-teachers')
 def get_teachers():
@@ -106,7 +106,7 @@ def get_teachers():
     return jsonify(teachers),200
 
 @admin_bp.route('/get-classrooms')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-classrooms')
 def get_classrooms():
@@ -115,7 +115,7 @@ def get_classrooms():
  
 
 @admin_bp.route('add-group',methods = ['POST'])
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('add-group')
 def add_group():
@@ -167,7 +167,7 @@ def add_group():
     return jsonify({'error':f'Ha ocurrido un error: {res}'}),500
 
 @admin_bp.route('/upload-and-register-users', methods=['POST'])
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('upload-and-register-users')
 def upload_and_register_users():
@@ -232,7 +232,7 @@ def upload_and_register_users():
     return jsonify({'response': 'ok', 'data': users_list}), 200
 
 @admin_bp.route('/get-count-roles')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-count-roles')
 def get_count_roles():
@@ -253,7 +253,7 @@ def get_count_roles():
 
 
 @admin_bp.route('/update-user',methods = ['PUT'])
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('update-user')
 def update_user():
@@ -282,7 +282,7 @@ def update_user():
     return jsonify({'success': 'Datos recibidos y validados correctamente.'}), 200
 
 @admin_bp.route('/get-weekday-attendances')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-weekday-attendances')
 def get_weekday_attendances():
@@ -290,7 +290,7 @@ def get_weekday_attendances():
     return jsonify(attendances),200
 
 @admin_bp.route('/count-students-by-group')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('count-students-by-group')
 def count_students_by_groups():

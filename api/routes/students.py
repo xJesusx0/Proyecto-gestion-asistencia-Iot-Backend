@@ -1,4 +1,7 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+
 from ..config import *
 from Database.students import *
 from Database.attendances import *
@@ -6,21 +9,25 @@ from Database import encode_time
 students_bp = Blueprint('students', __name__, url_prefix='/students')
 
 @students_bp.route('/get-student-modules',methods=['GET'])
-@token_required
+# @token_required
 @valid_login
 @valid_role('get-student-modules')
 def get_modules():
 
-    student_id = session['user-id']
+    current_user = get_jwt_identity()
+    student_id = current_user['user-id']
     groups = get_modules_by_id(student_id)    
     return jsonify(groups),200
 
 @students_bp.route('/get-student-attendances-by-group',methods=['GET'])
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-student-attendances-by-group')
 def get_student_attendances_by_group():
-    student_id = session['user-id']
+
+    current_user = get_jwt_identity()
+
+    student_id = current_user['user-id']
     group_id = request.args.get('group_id')
     module_id = request.args.get('module_id')
     period = request.args.get('period')

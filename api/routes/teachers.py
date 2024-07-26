@@ -1,6 +1,7 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from api.config import token_required,valid_role,valid_login
+from api.config import valid_role,valid_login
 
 from Database.teachers import *
 from Database.groups import get_group_details
@@ -10,17 +11,20 @@ from Database import encode_time
 teachers_bp = Blueprint('teachers',__name__,url_prefix='/teachers')
 
 @teachers_bp.route('/get-teacher-groups')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-teacher-groups')
 def get_teacher_groups():
-    groups = get_groups_by_teachers_id(session['user-id'])
+
+    current_user = get_jwt_identity()
+
+    groups = get_groups_by_teachers_id(current_user['user-id'])
     groups = encode_time(groups)
     return jsonify(groups)
 
 
 @teachers_bp.route('/get-group-details')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-group-details')
 def get_teacher_group_details():
@@ -41,7 +45,7 @@ def get_teacher_group_details():
     return jsonify(group),200
 
 @teachers_bp.route('/get-students-by-group')
-@token_required
+@jwt_required()
 @valid_login
 @valid_role('get-students-by-group')
 def get_all_students_by_group():

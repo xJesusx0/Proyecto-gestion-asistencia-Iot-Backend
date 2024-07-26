@@ -38,7 +38,7 @@ def convert_to_int(number:str):
         return None
     
 @esp32_bp.route('/set-attendance',methods = ['POST'])
-@token_required
+# @token_required
 #@valid_login
 #@valid_role('get-modules')
 def set_attendance():
