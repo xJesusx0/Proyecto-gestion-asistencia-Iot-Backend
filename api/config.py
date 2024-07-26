@@ -1,9 +1,12 @@
-from functools import wraps
-from flask import request, jsonify,session
-from .routes import api_routes
-from dotenv import load_dotenv
 import os
+
+from .routes import api_routes
+
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from functools import wraps
+from flask import request, jsonify
 import redis
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -17,14 +20,14 @@ if env == 'production':
         MYSQL_DB = os.getenv('MYSQL_DB')
         MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
-        SESSION_PERMANENT = False
+        # SESSION_PERMANENT = False
 
-        SESSION_TYPE = 'redis'
-        SESSION_REDIS = redis.StrictRedis(
-            host=os.getenv('REDIS_HOST'),
-            port=int(os.getenv('REDIS_PORT')),
-            password=os.getenv('REDIS_PASSWORD')
-        )
+        # SESSION_TYPE = 'redis'
+        # SESSION_REDIS = redis.StrictRedis(
+        #     host=os.getenv('REDIS_HOST'),
+        #     port=int(os.getenv('REDIS_PORT')),
+        #     password=os.getenv('REDIS_PASSWORD')
+        # )
         SECRET_KEY = os.getenv('SECRET_KEY')
 
 else:
@@ -35,34 +38,19 @@ else:
         MYSQL_DB = os.getenv('MYSQL_DB')
         MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
-        SESSION_PERMANENT = False
+        JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
-        SESSION_TYPE = 'filesystem'
         SECRET_KEY = os.getenv('SECRET_KEY')
 
-SECRET_TOKEN = os.getenv('SECRET_TOKEN')
-
-def valid_token(token):
-    return token == SECRET_TOKEN
-
-def token_required (func:callable):
-    @wraps(func)
-    def wrapper(*args,**kwargs):
-
-        token = request.headers.get('token')
-
-        if not token or not valid_token(token):
-            return jsonify({'message': 'Invalid token'}), 401
-
-        return func(*args, **kwargs)
-    
-    return wrapper
 
 def valid_login(func):
     @wraps(func)
+    @jwt_required()
     def wrapper(*args, **kwargs):
 
-        if 'logged-in' not in session or not session['logged-in']:
+        current_user = get_jwt_identity()
+
+        if 'logged-in' not in current_user:
             return jsonify({'error': 'No ha iniciado sesión'}), 401
         
         return func(*args, **kwargs)
@@ -72,11 +60,15 @@ def valid_login(func):
 def valid_role(route:str):
     def decorator(func:callable):
         @wraps(func)
+        @jwt_required()
         def wrapper(*args,**kwargs):
-            if 'role' not in session or not session['role']:
+
+            current_user = get_jwt_identity()
+
+            if 'role' not in current_user:
                 return jsonify({'error': 'No tienes un rol'}), 401
 
-            role = session.get('role')
+            role = current_user.get('role')
             routes_by_role = api_routes[role]
             
             if route not in routes_by_role:

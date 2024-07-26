@@ -1,8 +1,6 @@
 from flask import Flask,jsonify
 from flask_cors import CORS
-from flask_session import Session
-
-import pymysql
+from flask_jwt_extended import JWTManager
 
 from api.config import Config
 
@@ -16,7 +14,7 @@ app = Flask(__name__)
 
 app.config.from_object(Config)
 
-Session(app)
+JWTManager(app)
 CORS(app, supports_credentials=True)
  
 @app.errorhandler(404)
