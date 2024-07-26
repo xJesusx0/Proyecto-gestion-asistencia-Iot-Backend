@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 JWTManager(app)
-CORS(app, supports_credentials=True)
+CORS(app, resources={r"/*": {"allow_headers": ["Content-Type", "Authorization"]}})
  
 @app.errorhandler(404)
 def page_not_found(e):
