@@ -15,8 +15,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 JWTManager(app)
-CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"], "allow_headers": ["Content-Type", "Authorization"], "supports_credentials": True}})
- 
+CORS(app) 
 @app.errorhandler(404)
 def page_not_found(e):
     return jsonify({'error':404,'response':'Ruta no encontrada'}), 404
