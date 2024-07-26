@@ -67,10 +67,12 @@ def set_role():
 @auth_bp.route('/validate-login', methods=['GET'])
 @jwt_required()
 def validate_login():
-
-    current_user = get_jwt_identity()
-    logged_in = current_user.get('logged-in', False)
-    return jsonify({'response': logged_in})
+    try:     
+        current_user = get_jwt_identity()
+        logged_in = current_user.get('logged-in', False)
+        return jsonify({'response': logged_in})
+    except Exception as e:
+        return jsonify({'error':'Web token invalido'}),422
 
 @auth_bp.route('/logout', methods=['POST'])
 @jwt_required()
