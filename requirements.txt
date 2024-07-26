@@ -5,11 +5,13 @@ cachelib==0.13.0
 click==8.1.7
 Flask==3.0.3
 Flask-Cors==4.0.1
+Flask-JWT-Extended==4.6.0
 Flask-Session==0.8.0
 itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==2.1.5
 msgspec==0.18.6
+PyJWT==2.8.0
 PyMySQL==1.1.1
 python-dotenv==1.0.1
 redis==5.0.7
