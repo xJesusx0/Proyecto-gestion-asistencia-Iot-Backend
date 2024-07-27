@@ -27,6 +27,10 @@
         "create-group",
         "create-group.html",
         "group-info.html",
-        "group-info"
+        "group-info",
+        "add-students-to-group.html",
+        "add-students-to-group",
+        "groups.html",
+        "groups.html"
     ]
 }

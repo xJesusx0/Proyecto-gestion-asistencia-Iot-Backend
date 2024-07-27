@@ -14,13 +14,17 @@
         "upload-and-register-users",
         "get-users",
         "get-user-data",
+        "get-students-by-group",
         "get-modules",
         "get-teachers",
         "get-classrooms",
         "add-group",
+        "get-group-details",
         "get-count-roles",
         "update-user",
         "get-weekday-attendances",
-        "count-students-by-group"
+        "count-students-by-group",
+        "get-groups",
+        "get-students-not-in-group"
     ]
 }
