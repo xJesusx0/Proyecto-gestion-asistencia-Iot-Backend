@@ -15,7 +15,7 @@ from Database.auth import get_roles
 from Database.administrators import *
 from Database.students import get_groups_by_students_id
 from Database.teachers import get_groups_by_teachers_id, get_all_teachers
-from Database.groups import group_exists, insert_group, is_time_overlap
+from Database.groups import group_exists, insert_group, is_time_overlap, get_all_groups,get_students_not_in_group
 
 admin_bp = Blueprint('admin',__name__,url_prefix='/admin')
 
@@ -241,9 +241,6 @@ def get_count_roles():
     admin_count = count_admins()
     users_count = count_users()
 
-    print("-######################")
-    print(student_count)
-
     return jsonify({
         'estudiantes': student_count['ammount'],
         'profesores': teacher_count['ammount'],
@@ -297,3 +294,33 @@ def count_students_by_groups():
     students = count_students_by_group()
     return jsonify(students),200
 
+@admin_bp.route('/get-groups')
+@jwt_required()
+@valid_login
+@valid_role('get-groups')
+def get_groups():
+    groups = get_all_groups()
+
+    if not groups:
+        return jsonify({'response':'No hay grupos'}),404
+
+    groups_json = encode_time(groups)
+
+    return jsonify(groups_json),200
+
+@admin_bp.route('/get-students-not-in-group')
+@jwt_required()
+@valid_login
+@valid_role('get-students-not-in-group')
+def get_students_not_in_a_group():
+    group_id = request.args.get('group_id')
+    module_id = request.args.get('module_id')
+    period = request.args.get('period')
+
+    students= get_students_not_in_group(group_id,module_id,period)
+    print(students)
+
+    if students:
+        return jsonify(students),200
+    
+    return jsonify({'resposne':'Ha ocurrido un error al obtener los estudiantes'}),500
