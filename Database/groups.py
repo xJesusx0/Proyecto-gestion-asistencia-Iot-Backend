@@ -70,3 +70,34 @@ def get_group_details(mysql,cursor,group_id,module_id,period):
         return response
     
     return None
+
+@handle_database_operations
+def insert_students_to_group(mysql,cursor,group_id:str,module_id:str,period:str,students_ids:tuple):
+    
+    data = [(group_id,module_id,period,student_id) for student_id in students_ids]
+
+    query = 'INSERT INTO matricula (id_grupo, id_modulo, periodo, id_estudiante) VALUES (%s, %s, %s, %s)'
+
+    try:
+        cursor.executemany(query,data)
+    except Exception as e:
+        return e
+    
+@handle_database_operations
+def get_all_groups(mysql,cursor):
+    cursor.execute('SELECT grupo.*,modulos.nombre FROM grupo JOIN modulos ON grupo.id_modulo = modulos.id_modulo')
+    res = cursor.fetchall()
+    if res:
+        return res
+    
+    return None
+
+@handle_database_operations
+def get_students_not_in_group(mysql,cursor,group_id,module_id,period):
+    cursor.execute('SELECT DISTINCT matricula.id_estudiante,usuarios.nombres,usuarios.apellidos from matricula  JOIN usuarios ON usuarios.id_usuario = matricula.id_estudiante WHERE matricula.id_grupo <> %s OR matricula.id_modulo <> %s OR matricula.periodo <> %s',(group_id,module_id,period))
+    res = cursor.fetchall()
+    if res:
+        return res
+    
+    return None
+
