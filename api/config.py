@@ -9,13 +9,14 @@ import redis
 from dotenv import load_dotenv
 
 load_dotenv()
-        
-MYSQL_HOST = os.getenv('MYSQL_HOST')
-MYSQL_USER = os.getenv('MYSQL_USER')
-MYSQL_DB = os.getenv('MYSQL_DB')
-MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+class Config:
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+    MYSQL_HOST = os.getenv('MYSQL_HOST')
+    MYSQL_USER = os.getenv('MYSQL_USER')
+    MYSQL_DB = os.getenv('MYSQL_DB')
+    MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+
+    SECRET_KEY = os.getenv('SECRET_KEY')
 
 def valid_login(func):
     @wraps(func)
