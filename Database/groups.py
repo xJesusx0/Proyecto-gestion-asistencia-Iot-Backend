@@ -94,7 +94,7 @@ def get_all_groups(mysql,cursor):
 
 @handle_database_operations
 def get_students_not_in_group(mysql,cursor,group_id,module_id,period):
-    cursor.execute('SELECT DISTINCT matricula.id_estudiante,usuarios.nombres,usuarios.apellidos from matricula  JOIN usuarios ON usuarios.id_usuario = matricula.id_estudiante WHERE matricula.id_grupo <> %s OR matricula.id_modulo <> %s OR matricula.periodo <> %s',(group_id,module_id,period))
+    cursor.execute('select estudiante.id_estudiante,usuarios.nombres,usuarios.apellidos from estudiante left join matricula on matricula.id_estudiante = estudiante.id_estudiante and matricula.id_grupo = %s and matricula.id_modulo = %s and periodo = %s join usuarios on estudiante.id_estudiante = usuarios.id_usuario where matricula.id_estudiante is null',(group_id,module_id,period))
     res = cursor.fetchall()
     if res:
         return res

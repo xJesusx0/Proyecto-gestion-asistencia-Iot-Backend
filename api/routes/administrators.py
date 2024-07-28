@@ -15,7 +15,7 @@ from Database.auth import get_roles
 from Database.administrators import *
 from Database.students import get_groups_by_students_id
 from Database.teachers import get_groups_by_teachers_id, get_all_teachers
-from Database.groups import group_exists, insert_group, is_time_overlap, get_all_groups,get_students_not_in_group
+from Database.groups import group_exists, insert_group, is_time_overlap, get_all_groups,get_students_not_in_group,insert_students_to_group
 
 admin_bp = Blueprint('admin',__name__,url_prefix='/admin')
 
@@ -332,5 +332,23 @@ def add_students_to_a_group():
     
     request_body = request.get_json()
     print(request_body)
+    group_info = request_body.get('group_info')
+    students = request_body.get('students')
 
-    return jsonify('ok')
+    if not group_info or not students:
+        return jsonify({'error':'Hacen falta campos'}),400
+    
+    group_id = group_info.get('groupId')
+    module_id = group_info.get('moduleId')
+    period = group_info.get('period')
+
+    if not group_id or not module_id or not period:
+        return jsonify({'error':'Hacen falta campos'}),400
+
+    try:
+        insert_students_to_group(group_id,module_id,period,students)
+    except Exception as e:
+        return jsonify({'error':'Ha ocurrido un error'}),500
+    return jsonify({'success':'ok'}),200
+
+#{'group_info': {'groupId': 'SIN_G3', 'moduleId': 'COM22', 'period': '2024-2'}, 'students': ['1236', '1241']}
