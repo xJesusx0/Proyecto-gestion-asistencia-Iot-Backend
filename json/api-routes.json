@@ -25,6 +25,7 @@
         "get-weekday-attendances",
         "count-students-by-group",
         "get-groups",
-        "get-students-not-in-group"
+        "get-students-not-in-group",
+        "add-students-to-group"
     ]
 }

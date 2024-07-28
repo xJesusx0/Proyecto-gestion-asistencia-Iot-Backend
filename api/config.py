@@ -9,39 +9,13 @@ import redis
 from dotenv import load_dotenv
 
 load_dotenv()
-
-env = os.getenv('ENVIORMENT')
-
-if env == 'production':
-    class Config:
         
-        MYSQL_HOST = os.getenv('MYSQL_HOST')
-        MYSQL_USER = os.getenv('MYSQL_USER')
-        MYSQL_DB = os.getenv('MYSQL_DB')
-        MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+MYSQL_HOST = os.getenv('MYSQL_HOST')
+MYSQL_USER = os.getenv('MYSQL_USER')
+MYSQL_DB = os.getenv('MYSQL_DB')
+MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
-        # SESSION_PERMANENT = False
-
-        # SESSION_TYPE = 'redis'
-        # SESSION_REDIS = redis.StrictRedis(
-        #     host=os.getenv('REDIS_HOST'),
-        #     port=int(os.getenv('REDIS_PORT')),
-        #     password=os.getenv('REDIS_PASSWORD')
-        # )
-        SECRET_KEY = os.getenv('SECRET_KEY')
-
-else:
-    class Config:
-        
-        MYSQL_HOST = os.getenv('MYSQL_HOST')
-        MYSQL_USER = os.getenv('MYSQL_USER')
-        MYSQL_DB = os.getenv('MYSQL_DB')
-        MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
-
-        JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
-
-        SECRET_KEY = os.getenv('SECRET_KEY')
-
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 def valid_login(func):
     @wraps(func)
