@@ -318,9 +318,19 @@ def get_students_not_in_a_group():
     period = request.args.get('period')
 
     students= get_students_not_in_group(group_id,module_id,period)
-    print(students)
 
     if students:
         return jsonify(students),200
     
     return jsonify({'resposne':'Ha ocurrido un error al obtener los estudiantes'}),500
+
+@admin_bp.route('/add-students-to-group',methods = ['POST'])
+@jwt_required()
+@valid_login
+@valid_role('add-students-to-group')
+def add_students_to_a_group():
+    
+    request_body = request.get_json()
+    print(request_body)
+
+    return jsonify('ok')
