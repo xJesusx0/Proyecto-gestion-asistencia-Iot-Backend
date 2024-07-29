@@ -10,6 +10,8 @@
     "profesor": [
         "teachers.html",
         "teachers",
+        "history",
+        "history.html",
         "group-info.html",
         "group-info"
     ],

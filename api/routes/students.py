@@ -27,7 +27,13 @@ def get_student_attendances_by_group():
 
     current_user = get_jwt_identity()
 
-    student_id = current_user['user-id']
+    student_id = request.args.get('student_id')
+    print(student_id)
+
+    if not student_id or student_id == 'null':
+        student_id = current_user['user-id']
+    print('$$$$$$$$$$$$$')
+    print(student_id)
     group_id = request.args.get('group_id')
     module_id = request.args.get('module_id')
     period = request.args.get('period')

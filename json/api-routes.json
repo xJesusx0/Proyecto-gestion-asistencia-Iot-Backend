@@ -6,7 +6,9 @@
     "profesor": [
         "get-teacher-groups",
         "get-group-details",
-        "get-students-by-group"
+        "get-students-by-group",
+        "get-student-attendances-by-group"
+
     ],
     "administrador": [
         "administrators",
