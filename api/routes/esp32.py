@@ -1,33 +1,14 @@
-from datetime import datetime
 import json
 
 from flask import Blueprint, request, jsonify, session
-import pytz
 
+from api.routes import get_day,get_now
 from ..config import *
 from Database import encode_time
 from Database.groups import get_group,student_has_group
 from Database.attendances import attendance_exists,insert_attendance
 
 esp32_bp = Blueprint('esp32', __name__, url_prefix='/esp32')
-
-def get_day(day_in_english:str):
-    days = {
-        'Monday': 'lunes',
-        'Tuesday': 'martes',
-        'Wednesday': 'miércoles',
-        'Thursday': 'jueves',
-        'Friday': 'viernes',
-        'Saturday': 'sábado',
-        'Sunday': 'domingo'
-    }
-
-    day_in_spanish = days.get(day_in_english,None)
-
-    if day_in_spanish:
-        return day_in_spanish
-    
-    return None
 
 def convert_to_int(number:str):
     try:
@@ -57,14 +38,11 @@ def set_attendance():
 
     if not student_id:
         return jsonify({'error':f'El id de estudiante {string_student_id} tiene un formato incorrecto'}),400
-    bogota_tz = pytz.timezone('America/Bogota')
 
-    now = datetime.now(bogota_tz) 
-    # now = datetime.now()
+    now = get_now()
     current_time = now.strftime("%H:%M:%S")
     current_date = now.strftime("%Y-%m-%d")
     day_of_week = now.strftime("%A")
-    print(current_time,current_date,day_of_week)
     day = get_day(day_of_week)
     
     # quitar esto 
@@ -72,10 +50,9 @@ def set_attendance():
     # day = 'miercoles'
     # classroom_id = 3
     # current_date = '2024-07-03'
-    print(day,classroom_id,current_time)
+    
     group_exists = get_group(day,classroom_id,current_time)
-    print(group_exists)
-    print(current_time,current_date,day)
+    
     if not group_exists:
         return jsonify({'error':'Ningun grupo asignado a esta hora'}),404
 
