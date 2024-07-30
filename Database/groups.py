@@ -101,3 +101,13 @@ def get_students_not_in_group(mysql,cursor,group_id,module_id,period):
     
     return None
 
+@handle_database_operations
+def get_teacher_group(mysql,cursor,teacher_id,group_id,module_id,period,time,day):
+    
+    cursor.execute('SELECT * FROM grupo where id_profesor = %s AND id_grupo = %s AND id_modulo = %s AND periodo = %s AND %s >= hora_inicio and %s <= hora_fin AND dia_semana = %s',(teacher_id,group_id,module_id,period,time,time,day))
+    res = cursor.fetchone()
+
+    if res:
+        return res
+    
+    return None 
