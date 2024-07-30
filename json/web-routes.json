@@ -13,7 +13,10 @@
         "history",
         "history.html",
         "group-info.html",
-        "group-info"
+        "group-info",
+        "set-attendance.html",
+        "set-attendance"
+
     ],
     "administrador": [
         "administrators.html",

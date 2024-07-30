@@ -7,7 +7,8 @@
         "get-teacher-groups",
         "get-group-details",
         "get-students-by-group",
-        "get-student-attendances-by-group"
+        "get-student-attendances-by-group",
+        "set-group-attendance"
 
     ],
     "administrador": [
