@@ -5,7 +5,7 @@ from api.config import valid_role,valid_login
 from api.routes import get_now,get_day
 
 from Database.teachers import *
-from Database.groups import get_teacher_group
+from Database.groups import get_teacher_group,get_group_details
 from Database.students import get_students_by_group
 from Database.attendances import insert_group_attendance
 from Database import encode_time
