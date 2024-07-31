@@ -101,28 +101,28 @@ CREATE TABLE asistencias (
   FOREIGN KEY (id_modulo) REFERENCES modulos(id_modulo)
 );
 
-
-CREATE TABLE tipo_de_inasistencia (
-  id_tipo INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
-  descripcion VARCHAR(255)
-);
-
 CREATE TABLE inasistencia (
-  id_inasistencia INT AUTO_INCREMENT PRIMARY KEY,
-  id_grupo VARCHAR(100),
   id_estudiante VARCHAR(40),
+  id_grupo VARCHAR(100),
+  id_modulo VARCHAR(100),
+  periodo VARCHAR(100), 
   fecha DATE,
-  id_tipo INT,
-  FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo),
+  PRIMARY KEY (id_estudiante, id_grupo, id_modulo, periodo, fecha),
   FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante),
-  FOREIGN KEY (id_tipo) REFERENCES tipo_de_inasistencia(id_tipo)
+  FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo),
+  FOREIGN KEY (id_modulo) REFERENCES modulos(id_modulo)
 );
 
 CREATE TABLE justificaciones (
-  id_justificacion INT PRIMARY KEY,
+  id_estudiante VARCHAR(40),
+  id_grupo VARCHAR(100),
+  id_modulo VARCHAR(100),
+  periodo VARCHAR(100), 
+  fecha DATE,
   ruta_archivo VARCHAR(255),
-  id_inasistencia INT,
   descripcion VARCHAR(255),
-  FOREIGN KEY (id_inasistencia) REFERENCES inasistencia(id_inasistencia)
+  PRIMARY KEY (id_estudiante, id_grupo, id_modulo, periodo, fecha),
+  FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante),
+  FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo),
+  FOREIGN KEY (id_modulo) REFERENCES modulos(id_modulo)
 );
