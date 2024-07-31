@@ -4,6 +4,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import dropbox
 
 from ..config import *
+
+from Database.fails import get_fails_by_student,insert_justification,get_fails_by_id_and_group
 from Database.students import *
 from Database.attendances import *
 from Database import encode_time
@@ -11,7 +13,7 @@ from Database import encode_time
 students_bp = Blueprint('students', __name__, url_prefix='/students')
 
 @students_bp.route('/get-student-modules',methods=['GET'])
-# @token_required
+@jwt_required()
 @valid_login
 @valid_role('get-student-modules')
 def get_modules():
@@ -34,8 +36,7 @@ def get_student_attendances_by_group():
 
     if not student_id or student_id == 'null':
         student_id = current_user['user-id']
-    print('$$$$$$$$$$$$$')
-    print(student_id)
+    
     group_id = request.args.get('group_id')
     module_id = request.args.get('module_id')
     period = request.args.get('period')
@@ -60,7 +61,19 @@ def set_justification():
     
     if 'file' not in request.files:
         return jsonify({'error':'se esperaba un archivo'}),400
+     
+    fail_id = request.form.get('fail-id')
+    message = request.form.get('message') 
+
+    if not fail_id or not message:
+        return jsonify({'error':'Todos los campos son obligatorios'}),400
+
+    fail_info = fail_id.split(',')
+    student = get_jwt_identity()
+    if fail_info[0] != student['user-id']:
+        return jsonify({'error':'La id del usuario coincide'}),400    
     
+
     file = request.files['file']
 
     if file.filename == '':
@@ -91,10 +104,16 @@ def set_justification():
 
     if not valid_type:
         return jsonify({'error': 'Formato de archivo invalido'}), 400
+    
+    filename = f"{fail_info[0]},{fail_info[1]},{fail_info[2]},{fail_info[3]},{fail_info[4]}{extension}"
+    file.filename = filename
+    print(file.filename)
 
     dbx = dropbox.Dropbox(Config.DROPBOX_SECRET)
-   
+    
     dropbox_path = f'/{file.filename}'
+
+    insert_justification(fail_info[0],fail_info[1],fail_info[2],fail_info[3],fail_info[4],dropbox_path,message)
 
     try:    
         file_data = file.read()
@@ -105,3 +124,44 @@ def set_justification():
 
     return jsonify({'response':'ok'})
 
+@students_bp.route('/get-student-fails',methods=['GET'])
+@jwt_required()
+@valid_login
+@valid_role('get-student-fails')
+def get_student_fails():
+    student = get_jwt_identity()
+    fails = get_fails_by_student(student.get('user-id'))
+    
+    fails_json = encode_time(fails)
+    print(fails)
+    return jsonify(fails_json),200
+
+
+@students_bp.route('/get-student-fails-by-group',methods=['GET'])
+@jwt_required()
+@valid_login
+@valid_role('get-student-fails-by-group')
+def get_student_fails_by_group():
+    current_user = get_jwt_identity()
+
+    student_id = request.args.get('student_id')
+    print(student_id)
+
+    if not student_id or student_id == 'null':
+        student_id = current_user['user-id']
+    
+    group_id = request.args.get('group_id')
+    module_id = request.args.get('module_id')
+    period = request.args.get('period')
+
+    if not group_id or not module_id or not period or not student_id:
+        return jsonify({'error':'Hacen falta argumentos'}),400
+    
+    fails = get_fails_by_id_and_group(student_id,group_id,module_id,period)
+    fails_json = encode_time(fails)
+    print(fails_json)
+    print(student_id)
+    if not fails_json:
+        return jsonify({'response':'No se encontraron inasistencias'}),200
+
+    return jsonify(fails_json),200
