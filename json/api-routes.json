@@ -1,7 +1,8 @@
 {
     "estudiante": [
         "get-student-modules",
-        "get-student-attendances-by-group"
+        "get-student-attendances-by-group",
+        "set-justification"
     ],
     "profesor": [
         "get-teacher-groups",

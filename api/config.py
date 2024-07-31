@@ -17,7 +17,7 @@ class Config:
     MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
     SECRET_KEY = os.getenv('SECRET_KEY')
-
+    DROPBOX_SECRET = os.getenv('DROPBOX_SECRET')
 def valid_login(func):
     @wraps(func)
     @jwt_required()
