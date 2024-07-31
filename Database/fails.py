@@ -46,3 +46,25 @@ def get_fails_by_student(mysql,cursor,student_id):
         return res
     
     return None
+
+@handle_database_operations
+def insert_justification(mysql,cursor,student_id,group_id,module_id,period,date,url,description):
+
+    query = 'INSERT INTO justificaciones (id_estudiante,id_grupo,id_modulo,periodo,fecha,ruta_archivo,descripcion) values (%s,%s,%s,%s,%s,%s,%s)'
+    values = (student_id,group_id,module_id,period,date,url,description)
+    try:
+        cursor.execute(query,values)
+    except Exception as e:
+        return e
+
+@handle_database_operations
+def get_fails_by_id_and_group(mysql,cursor,student_id,group_id,module_id,period):
+    cursor.execute('SELECT * FROM inasistencia WHERE id_estudiante = %s AND id_grupo = %s AND id_modulo = %s AND periodo = %s',(student_id,group_id,module_id,period))
+
+    res = cursor.fetchall()
+
+    if res:
+        return res
+
+    return None
+ 
