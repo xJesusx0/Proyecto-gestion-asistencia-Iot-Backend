@@ -322,7 +322,7 @@ def get_students_not_in_a_group():
     if students:
         return jsonify(students),200
     
-    return jsonify({'resposne':'Ha ocurrido un error al obtener los estudiantes'}),500
+    return jsonify({'error':'No hay estudiantes disponibles'}),404
 
 @admin_bp.route('/add-students-to-group',methods = ['POST'])
 @jwt_required()
