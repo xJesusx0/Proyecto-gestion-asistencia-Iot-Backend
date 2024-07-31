@@ -2,15 +2,19 @@
     "estudiante": [
         "get-student-modules",
         "get-student-attendances-by-group",
-        "set-justification"
+        "get-group-details",
+        "set-justification",
+        "get-student-fails",
+        "get-student-fails-by-group"
     ],
     "profesor": [
         "get-teacher-groups",
         "get-group-details",
+        "get-student-fails-by-group",
         "get-students-by-group",
         "get-student-attendances-by-group",
-        "set-group-attendance"
-
+        "set-group-attendance",
+        "set-group-fails"
     ],
     "administrador": [
         "administrators",
@@ -19,6 +23,7 @@
         "get-users",
         "get-user-data",
         "get-students-by-group",
+        "get-student-attendances-by-group",
         "get-modules",
         "get-teachers",
         "get-classrooms",
@@ -29,6 +34,8 @@
         "get-weekday-attendances",
         "count-students-by-group",
         "get-groups",
+        "get-student-fails",
+        "get-student-fails-by-group",
         "get-students-not-in-group",
         "add-students-to-group"
     ]

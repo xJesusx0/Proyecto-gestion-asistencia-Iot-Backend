@@ -31,6 +31,8 @@
         "user-info.html",
         "create-group",
         "create-group.html",
+        "history",
+        "history.html",
         "group-info.html",
         "group-info",
         "add-students-to-group.html",
