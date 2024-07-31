@@ -8,6 +8,7 @@ from Database.teachers import *
 from Database.groups import get_teacher_group,get_group_details
 from Database.students import get_students_by_group
 from Database.attendances import insert_group_attendance
+from Database.fails import get_absent_students_by_date,insert_fails
 from Database import encode_time
 
 teachers_bp = Blueprint('teachers',__name__,url_prefix='/teachers')
@@ -100,12 +101,49 @@ def set_group_attendance():
     group = get_teacher_group(teacher['user-id'],group_id,module_id,period,current_time,day) 
 
     if not group:
-        return jsonify({'error':'Grupo no encontrado'}),404
+        return jsonify({'error':'La clase ya finalizo'}),404
     
     day_info = [current_date,current_time,day]
     res = insert_group_attendance(students,group_id,module_id,period,current_date,current_time)
     
     if res:
         return jsonify({'error':str(res)})
-
+        
     return jsonify({'data':request_body,'day':day_info})
+
+
+@teachers_bp.route('/set-group-fails',methods = ['POST'])
+@jwt_required()
+@valid_login
+@valid_role('set-group-fails')
+def set_group_fails():
+    request_body = request.get_json()
+    
+    group_info = request_body.get('group_info')
+
+    if not group_info:
+        return jsonify({'error':'Hacen falta campos'}),400
+    
+    group_id = group_info.get('group_id')
+    module_id = group_info.get('module_id')    
+    period = group_info.get('period')
+
+    if not group_id or not module_id or not period:
+        return jsonify({'error':'Hacen falta campos'}),400
+
+    now = get_now()
+    current_time = now.strftime("%H:%M:%S")
+    current_date = now.strftime("%Y-%m-%d")
+    day = get_day(now.strftime("%A"))  
+
+    students = absent_students = get_absent_students_by_date(current_date,group_id,module_id,period) 
+    
+    if not students:
+        return jsonify({'error':'Ha ocurrido un error al obtener los estudiantes'}),404
+
+    students_ids = [student.get('id_estudiante') for student in students]
+
+    res = insert_fails(students_ids,group_id,module_id,period,current_date)
+    if res:
+        return jsonify({'error':f'Ha ocurrido un error al insertar las inasistencias:\n{res}'}),500
+    return jsonify({'response':'ok'})
