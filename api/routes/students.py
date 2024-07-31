@@ -1,11 +1,13 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+import dropbox
 
 from ..config import *
 from Database.students import *
 from Database.attendances import *
 from Database import encode_time
+
 students_bp = Blueprint('students', __name__, url_prefix='/students')
 
 @students_bp.route('/get-student-modules',methods=['GET'])
@@ -49,3 +51,57 @@ def get_student_attendances_by_group():
     attendances_json = encode_time(attendances)
 
     return jsonify(attendances_json)
+
+@students_bp.route('/set-justification',methods=['POST'])
+@jwt_required()
+@valid_login
+@valid_role('set-justification')
+def set_justification():
+    
+    if 'file' not in request.files:
+        return jsonify({'error':'se esperaba un archivo'}),400
+    
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'response': 'No se selecciono un archivo'}), 400
+
+    if not file:
+        return jsonify({'response': 'No se selecciono un archivo'}), 400
+
+    MAX_FILE_SIZE = 2 * 1024 * 1024
+
+    file.seek(0, os.SEEK_END) 
+    file_size = file.tell()   
+    file.seek(0)           
+
+    if file_size > MAX_FILE_SIZE:
+        return jsonify({'error': 'El archivo es demasiado grande'}), 400
+
+    valid_extensions = {'.png', '.jpg', '.pdf','.jpeg'}
+
+    if hasattr(file, 'filename') and file.filename:
+        filename = file.filename.lower()
+        
+        extension = os.path.splitext(filename)[1]
+
+        valid_type = extension in valid_extensions
+    else:
+        valid_type = False
+
+    if not valid_type:
+        return jsonify({'error': 'Formato de archivo invalido'}), 400
+
+    dbx = dropbox.Dropbox(Config.DROPBOX_SECRET)
+   
+    dropbox_path = f'/{file.filename}'
+
+    try:    
+        file_data = file.read()
+        response = dbx.files_upload(file_data, dropbox_path)
+        print(f'Archivo subido exitosamente: {response.name}')
+    except Exception as e:
+        print(f'Error al subir el archivo: {e}')
+
+    return jsonify({'response':'ok'})
+
