@@ -67,4 +67,3 @@ def get_fails_by_id_and_group(mysql,cursor,student_id,group_id,module_id,period)
         return res
 
     return None
- 
