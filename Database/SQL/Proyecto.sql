@@ -107,6 +107,7 @@ CREATE TABLE inasistencia (
   id_modulo VARCHAR(100),
   periodo VARCHAR(100), 
   fecha DATE,
+  justificada TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (id_estudiante, id_grupo, id_modulo, periodo, fecha),
   FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante),
   FOREIGN KEY (id_grupo) REFERENCES grupo(id_grupo),
