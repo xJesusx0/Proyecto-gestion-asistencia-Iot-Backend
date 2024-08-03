@@ -18,7 +18,9 @@
         "get-day-attendances",
         "get-students-without-attendance-by-group",
         "get-fails-by-group",
-        "approve-justification"
+        "approve-justification",
+        "download",
+        "get-justification-url"
     ],
     "administrador": [
         "administrators",
