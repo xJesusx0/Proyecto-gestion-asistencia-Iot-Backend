@@ -8,7 +8,7 @@ from Database.teachers import *
 from Database.groups import get_teacher_group,get_group_details
 from Database.students import get_students_by_group
 from Database.attendances import insert_group_attendance,get_attendances_by_day,get_students_without_attendance_by_group
-from Database.fails import get_absent_students_by_date,insert_fails,get_fails_by_id_and_group,get_all_fails_by_group
+from Database.fails import get_absent_students_by_date,insert_fails,get_fails_by_id_and_group,get_all_fails_by_group,change_approval_state
 from Database import encode_time
 
 teachers_bp = Blueprint('teachers',__name__,url_prefix='/teachers')
@@ -220,5 +220,31 @@ def get_fails_by_group():
 
     fails_json = encode_time(fails)
 
-    print(fails_json)
     return jsonify(fails_json)
+
+@teachers_bp.route('/approve-justification',methods = ['POST'])
+@jwt_required()
+@valid_login
+@valid_role('approve-justification')
+def aprove_justification():
+    request_body = request.get_json()
+    
+    if not request_body:
+        return jsonify({'error':'Hacen falta campos'}),400
+
+    student_id = request_body.get('student_id') 
+    group_id = request_body.get('group_id')
+    module_id = request_body.get('module_id')    
+    period = request_body.get('period')
+    date = request_body.get('date')
+
+    if not student_id or not group_id or not module_id or not period or not date:
+        return jsonify({'error':'Hacen falta campos'}),400
+
+    res = change_approval_state(student_id,group_id,module_id,period,date)
+
+    if res:
+        print(res)
+        return jsonify({'error':str(res)}),500
+    
+    return jsonify({'response':'Operacion realizada correctamente'}),200

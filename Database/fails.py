@@ -81,5 +81,14 @@ def get_all_fails_by_group(mysql,cursor,group_id,module_id,period):
 
 @handle_database_operations
 def change_justification_state(mysql,cursor,student_id,group_id,module_id,period,date):
+    try: 
+        cursor.execute('UPDATE inasistencia SET justificada = 1 WHERE id_estudiante = %s AND id_grupo = %s AND id_modulo = %s AND periodo = %s AND fecha = %s',(student_id,group_id,module_id,period,date))
+    except Exception as e:
+        return e
 
-    cursor.execute('UPDATE inasistencia SET justificada = 1 WHERE id_estudiante = %s AND id_grupo = %s AND id_modulo = %s AND periodo = %s AND fecha = %s',(student_id,group_id,module_id,period,date))
+@handle_database_operations
+def change_approval_state(mysql,cursor,student_id,group_id,module_id,period,date):
+    try: 
+        cursor.execute('UPDATE inasistencia SET aprobada = 1 WHERE id_estudiante = %s AND id_grupo = %s AND id_modulo = %s AND periodo = %s AND fecha = %s',(student_id,group_id,module_id,period,date))
+    except Exception as e:
+        return e
