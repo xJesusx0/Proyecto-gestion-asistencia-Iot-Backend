@@ -8,7 +8,7 @@ from Database.teachers import *
 from Database.groups import get_teacher_group,get_group_details
 from Database.students import get_students_by_group
 from Database.attendances import insert_group_attendance,get_attendances_by_day,get_students_without_attendance_by_group
-from Database.fails import get_absent_students_by_date,insert_fails,get_fails_by_id_and_group
+from Database.fails import get_absent_students_by_date,insert_fails,get_fails_by_id_and_group,get_all_fails_by_group
 from Database import encode_time
 
 teachers_bp = Blueprint('teachers',__name__,url_prefix='/teachers')
@@ -182,7 +182,6 @@ def set_group_fails():
 @valid_role('get-day-attendances')
 def get_day_attendances():
 
-    
     group_id = request.args.get('group_id')
     module_id = request.args.get('module_id')
     period = request.args.get('period')
@@ -200,4 +199,26 @@ def get_day_attendances():
     attendances_json = encode_time(attendances)
     
     return jsonify(attendances_json),200
- 
+
+@teachers_bp.route('/get-fails-by-group')
+@jwt_required()
+@valid_login
+@valid_role('get-fails-by-group')
+def get_fails_by_group():
+
+    group_id = request.args.get('group_id')
+    module_id = request.args.get('module_id')
+    period = request.args.get('period')
+    
+    if not group_id or not module_id or not period:
+        return jsonify({'error':'Hacen falta campos'}),400
+
+    fails = get_all_fails_by_group(group_id,module_id,period)
+    
+    if not fails:
+        return jsonify({'error':'No hay inasistencias'}),404
+
+    fails_json = encode_time(fails)
+
+    print(fails_json)
+    return jsonify(fails_json)
