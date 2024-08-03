@@ -5,7 +5,7 @@ import dropbox
 
 from ..config import *
 
-from Database.fails import get_fails_by_student,insert_justification,get_fails_by_id_and_group
+from Database.fails import get_fails_by_student,insert_justification,get_fails_by_id_and_group,change_justification_state
 from Database.students import *
 from Database.attendances import *
 from Database import encode_time
@@ -112,9 +112,13 @@ def set_justification():
     dbx = dropbox.Dropbox(Config.DROPBOX_SECRET)
     
     dropbox_path = f'/{file.filename}'
-
-    insert_justification(fail_info[0],fail_info[1],fail_info[2],fail_info[3],fail_info[4],dropbox_path,message)
-
+    
+    res = insert_justification(fail_info[0],fail_info[1],fail_info[2],fail_info[3],fail_info[4],dropbox_path,message)
+    
+    if res:
+        return jsonify({'error':str(res)})
+    
+    change_justification_state(fail_info[0],fail_info[1],fail_info[2],fail_info[3],fail_info[4])
     try:    
         file_data = file.read()
         response = dbx.files_upload(file_data, dropbox_path)
