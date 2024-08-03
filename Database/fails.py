@@ -92,3 +92,15 @@ def change_approval_state(mysql,cursor,student_id,group_id,module_id,period,date
         cursor.execute('UPDATE inasistencia SET aprobada = 1 WHERE id_estudiante = %s AND id_grupo = %s AND id_modulo = %s AND periodo = %s AND fecha = %s',(student_id,group_id,module_id,period,date))
     except Exception as e:
         return e
+    
+@handle_database_operations
+def get_justification_path(mysql,cursor,student_id,group_id,module_id,period,date):
+
+    cursor.execute('select * from justificaciones where id_estudiante = %s and id_grupo = %s and id_modulo = %s and periodo = %s and fecha = %s',(student_id,group_id,module_id,period,date))
+
+    res = cursor.fetchone()
+
+    if res:
+        return res
+    
+    return None
