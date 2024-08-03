@@ -1,6 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify,send_file
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+import dropbox
+import io
+
+from api.config import Config
 from api.config import valid_role,valid_login
 from api.routes import get_now,get_day
 
@@ -8,7 +12,7 @@ from Database.teachers import *
 from Database.groups import get_teacher_group,get_group_details
 from Database.students import get_students_by_group
 from Database.attendances import insert_group_attendance,get_attendances_by_day,get_students_without_attendance_by_group
-from Database.fails import get_absent_students_by_date,insert_fails,get_fails_by_id_and_group,get_all_fails_by_group,change_approval_state
+from Database.fails import get_absent_students_by_date,insert_fails,get_fails_by_id_and_group,get_all_fails_by_group,change_approval_state,get_justification_path
 from Database import encode_time
 
 teachers_bp = Blueprint('teachers',__name__,url_prefix='/teachers')
@@ -248,3 +252,45 @@ def aprove_justification():
         return jsonify({'error':str(res)}),500
     
     return jsonify({'response':'Operacion realizada correctamente'}),200
+
+@teachers_bp.route('/download/<path:filename>')
+@jwt_required()
+@valid_login
+@valid_role('download')
+def download_file(filename):
+    dbx = dropbox.Dropbox(Config.DROPBOX_SECRET)
+
+    try:
+        metadata, response = dbx.files_download('/' + filename)
+        
+        file_stream = io.BytesIO(response.content)
+        print(file_stream)
+        print('$$$$$$$$$')        
+        return send_file(file_stream, download_name= filename, as_attachment=True)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+
+@teachers_bp.route('/get-justification-url')
+@jwt_required()
+@valid_login
+@valid_role('get-justification-url')
+def get_justification_url():
+    
+    student_id =request.args.get('student_id')
+    group_id = request.args.get('group_id')
+    module_id = request.args.get('module_id')
+    period = request.args.get('period')
+    date = request.args.get('date')
+    
+    if not student_id or not group_id or not module_id or not period or not date:
+        return jsonify({'error':'Hacen falta campos'}),400
+
+    path = get_justification_path(student_id,group_id,module_id,period,date)
+
+    if not path:
+        return jsonify({'error':'No hay una justificacion'}),404
+    
+    print(path['ruta_archivo'])
+    
+    return jsonify({'url':path['ruta_archivo']})
