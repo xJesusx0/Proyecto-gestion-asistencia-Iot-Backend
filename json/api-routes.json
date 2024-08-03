@@ -16,7 +16,8 @@
         "set-group-attendance",
         "set-group-fails",
         "get-day-attendances",
-        "get-students-without-attendance-by-group"
+        "get-students-without-attendance-by-group",
+        "get-fails-by-group"
     ],
     "administrador": [
         "administrators",

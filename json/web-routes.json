@@ -15,7 +15,9 @@
         "group-info.html",
         "group-info",
         "set-attendance.html",
-        "set-attendance"
+        "set-attendance",
+        "fails.html",
+        "fails"
 
     ],
     "administrador": [
