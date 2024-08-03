@@ -118,13 +118,17 @@ def set_justification():
     if res:
         return jsonify({'error':str(res)})
     
-    change_justification_state(fail_info[0],fail_info[1],fail_info[2],fail_info[3],fail_info[4])
+    res = change_justification_state(fail_info[0],fail_info[1],fail_info[2],fail_info[3],fail_info[4])
+    if res:
+        return jsonify({'error':str(res)})
+    
     try:    
         file_data = file.read()
         response = dbx.files_upload(file_data, dropbox_path)
         print(f'Archivo subido exitosamente: {response.name}')
     except Exception as e:
         print(f'Error al subir el archivo: {e}')
+        return jsonify({'error':f'Error al subir el archivo: {e}'}),500
 
     return jsonify({'response':'ok'})
 
