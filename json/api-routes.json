@@ -43,6 +43,9 @@
         "get-student-fails",
         "get-student-fails-by-group",
         "get-students-not-in-group",
-        "add-students-to-group"
+        "add-students-to-group",
+        "get-count-groups-by-module",
+        "get-count-fails-by-module",
+        "count-justificated-and-no-justifiacted-fails"
     ]
 }
