@@ -351,4 +351,43 @@ def add_students_to_a_group():
         return jsonify({'error':'Ha ocurrido un error'}),500
     return jsonify({'success':'ok'}),200
 
-#{'group_info': {'groupId': 'SIN_G3', 'moduleId': 'COM22', 'period': '2024-2'}, 'students': ['1236', '1241']}
+#         "",
+#         "get-count-fails-by-module",
+#         "count-justificated-and-no-justifiacted-ails"
+
+@admin_bp.route('/get-count-groups-by-module')
+@jwt_required()
+@valid_login
+@valid_role('get-count-groups-by-module')
+def get_count_groups_by_module():
+    groups = count_groups_by_module()
+    
+    if not groups:
+        return jsonify([])
+    
+    return jsonify(groups)
+
+@admin_bp.route('/get-count-fails-by-module')
+@jwt_required()
+@valid_login
+@valid_role('get-count-fails-by-module')
+def count_fails_by_module():
+    fails = fails_by_module()
+
+    if not fails:
+        return jsonify([])
+    
+    return jsonify(fails)
+
+
+@admin_bp.route('/count-justificated-and-no-justifiacted-fails')
+@jwt_required()
+@valid_login
+@valid_role('count-justificated-and-no-justifiacted-fails')
+def count_just_and_no_just_fails():
+    fails = count_justificated_and_no_justifiacted_fails()
+
+    if not fails:
+        return jsonify([])
+    
+    return jsonify(fails)

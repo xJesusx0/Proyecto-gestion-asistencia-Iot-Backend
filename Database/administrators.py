@@ -103,3 +103,26 @@ def count_students_by_group(mysql,cursor):
     cursor.execute('select grupo.id_grupo, count(*) as cantidad_estudiante FROM matricula join grupo on grupo.id_grupo = matricula.id_grupo group by grupo.id_grupo order by cantidad_estudiante desc')
     response = cursor.fetchall()
     return response
+
+@handle_database_operations
+def count_groups_by_module(mysql,cursor):
+    query = "SELECT m.nombre AS modulo, COUNT(g.id_grupo) AS total_grupos FROM grupo g JOIN modulos m ON g.id_modulo = m.id_modulo GROUP BY m.nombre"
+    cursor.execute(query)
+    response = cursor.fetchall()
+    return response
+
+@handle_database_operations
+def fails_by_module(mysql,cursor):
+    query = 'SELECT m.nombre AS modulo, COUNT(i.id_estudiante) AS total_inasistencias FROM inasistencia i JOIN modulos m ON i.id_modulo = m.id_modulo GROUP BY m.id_modulo ORDER BY total_inasistencias DESC'
+    cursor.execute(query)
+    response = cursor.fetchall()
+    return response
+
+@handle_database_operations
+def count_justificated_and_no_justifiacted_fails(mysql,cursor):
+    query = 'SELECT SUM(CASE WHEN i.justificada = 1 THEN 1 ELSE 0 END) AS inasistencias_justificadas, SUM(CASE WHEN i.justificada = 0 THEN 1 ELSE 0 END) AS inasistencias_no_justificadas FROM inasistencia i'
+    cursor.execute(query)
+    response = cursor.fetchall()
+    return response
+
+
