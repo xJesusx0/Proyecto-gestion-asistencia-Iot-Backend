@@ -293,4 +293,4 @@ def get_justification_url():
     
     print(path['ruta_archivo'])
     
-    return jsonify({'url':path['ruta_archivo']})
+    return jsonify(path)
