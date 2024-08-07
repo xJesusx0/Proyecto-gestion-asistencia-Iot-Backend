@@ -58,8 +58,8 @@ def insert_justification(mysql,cursor,student_id,group_id,module_id,period,date,
         return e
 
 @handle_database_operations
-def get_fails_by_id_and_group(mysql,cursor,student_id,group_id,module_id,period):
-    cursor.execute('SELECT * FROM inasistencia WHERE id_estudiante = %s AND id_grupo = %s AND id_modulo = %s AND periodo = %s',(student_id,group_id,module_id,period))
+def get_fails_by_id_and_group(mysql,cursor,student_id,group_id,module_id,period,date):
+    cursor.execute('SELECT * FROM inasistencia WHERE id_estudiante = %s AND id_grupo = %s AND id_modulo = %s AND periodo = %s AND fecha = %s',(student_id,group_id,module_id,period,date))
 
     res = cursor.fetchall()
 
@@ -104,3 +104,15 @@ def get_justification_path(mysql,cursor,student_id,group_id,module_id,period,dat
         return res
     
     return None
+
+
+@handle_database_operations
+def count_fails_by_group(mysql,cursor,group_id,module_id,period):
+    cursor.execute('select id_estudiante,count(*) as inasistencias from inasistencia where id_grupo = %s and id_modulo = %s and periodo = %s group by id_estudiante',(group_id,module_id,period))
+
+    res = cursor.fetchall()
+    if res:
+        return res
+    
+    return None
+

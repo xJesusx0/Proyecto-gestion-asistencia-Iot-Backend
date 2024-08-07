@@ -20,7 +20,8 @@
         "get-fails-by-group",
         "approve-justification",
         "download",
-        "get-justification-url"
+        "get-justification-url",
+        "generate-report"
     ],
     "administrador": [
         "administrators",
