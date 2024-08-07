@@ -68,3 +68,12 @@ def get_students_without_attendance_by_group(mysql,cursor,group_id,module_id,per
         return res
     
     return None
+
+@handle_database_operations
+def count_attendances_by_group(mysql,cursor,group_id,module_id,period):
+    cursor.execute('select id_estudiante,count(*) as asistencias from asistencias where id_grupo = %s and id_modulo = %s and periodo = %s group by id_estudiante',(group_id,module_id,period))
+    res = cursor.fetchall()
+    if res:
+        return res
+    
+    return None   
