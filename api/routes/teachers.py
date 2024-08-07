@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 import dropbox
 import io
+import csv
 
 from api.config import Config
 from api.config import valid_role,valid_login
@@ -11,8 +12,8 @@ from api.routes import get_now,get_day
 from Database.teachers import *
 from Database.groups import get_teacher_group,get_group_details
 from Database.students import get_students_by_group
-from Database.attendances import insert_group_attendance,get_attendances_by_day,get_students_without_attendance_by_group
-from Database.fails import get_absent_students_by_date,insert_fails,get_fails_by_id_and_group,get_all_fails_by_group,change_approval_state,get_justification_path
+from Database.attendances import insert_group_attendance,get_attendances_by_day,get_students_without_attendance_by_group,count_attendances_by_group
+from Database.fails import get_absent_students_by_date,insert_fails,get_fails_by_id_and_group,get_all_fails_by_group,change_approval_state,get_justification_path,count_fails_by_group
 from Database import encode_time
 
 teachers_bp = Blueprint('teachers',__name__,url_prefix='/teachers')
@@ -133,7 +134,7 @@ def set_group_attendance():
     day_info = [current_date,current_time,day]
 
     for student in students:
-        fail_exist = get_fails_by_id_and_group(student,group_id,module_id,period)
+        fail_exist = get_fails_by_id_and_group(student,group_id,module_id,period,current_date)
         print(fail_exist)
 
         if fail_exist:
@@ -294,3 +295,71 @@ def get_justification_url():
     print(path['ruta_archivo'])
     
     return jsonify(path)
+
+
+@teachers_bp.route('/generate-report',methods = ['POST'])
+@jwt_required()
+@valid_login
+@valid_role('generate-report')
+def generate_report():
+    request_body = request.get_json()
+    
+    if not request_body:
+        return jsonify({'error':'Hacen falta campos'}),400
+
+    group_id = request_body.get('group_id')
+    module_id = request_body.get('module_id')    
+    period = request_body.get('period')
+
+    if not group_id or not module_id or not period: 
+        return jsonify({'error':'Hacen falta campos'}),400
+
+    fails = count_fails_by_group(group_id,module_id,period)
+    attendances = count_attendances_by_group(group_id,module_id,period)
+    students = get_students_by_group(group_id,module_id,period)
+    
+    data = {
+        'estudiantes':students,
+        'asistencias':attendances,
+        'inasistencias':fails
+    }
+
+    students_dict = {student['id_estudiante']: student for student in data['estudiantes']}
+
+    for student in students_dict.values():
+        student['asistencias'] = 0
+        student['faltas'] = 0
+
+    for asistencia in data['asistencias']:
+        student_id = asistencia['id_estudiante']
+        if student_id in students_dict:
+            students_dict[student_id]['asistencias'] += asistencia['asistencias']
+
+    for inasistencia in data['inasistencias']:
+        student_id = inasistencia['id_estudiante']
+        if student_id in students_dict:
+            students_dict[student_id]['faltas'] = inasistencia['inasistencias']
+
+    resultado = [
+        {
+            'id_estudiante': est['id_estudiante'],
+            'nombre': est['nombres'],
+            'apellido': est['apellidos'],
+            'asistencias': est['asistencias'],
+            'faltas': est['faltas']
+        }
+        for est in students_dict.values()
+    ]
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=resultado[0].keys())
+    
+    writer.writeheader()
+    writer.writerows(resultado)
+    
+    output.seek(0)
+    return send_file(
+        io.BytesIO(output.getvalue().encode('utf-8')),
+        mimetype='text/csv',
+        as_attachment=True,
+        download_name='data.csv'
+    )
