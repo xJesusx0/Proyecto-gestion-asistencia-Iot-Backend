@@ -142,6 +142,9 @@ def set_group_attendance():
 
     res = insert_group_attendance(students,group_id,module_id,period,current_date,current_time)
     if res:
+        if res.args[0] == 1062:
+            return jsonify({'error':'asistencias duplicadas'}),409
+
         return jsonify({'error':str(res)})
     print(res) 
     return jsonify({'data':request_body,'day':day_info})
@@ -168,6 +171,14 @@ def set_group_fails():
 
     now = get_now()
     current_date = now.strftime("%Y-%m-%d")
+    day_of_week = now.strftime("%A")
+    day = get_day(day_of_week)
+    
+    group = get_group_details(group_id,module_id,period)
+    print(group)
+
+    if group['dia_semana'] != day:
+        return jsonify({'error':'La clase no corresponde al dia de hoy'}),400
 
     students = get_absent_students_by_date(current_date,group_id,module_id,period) 
     
@@ -177,7 +188,11 @@ def set_group_fails():
     students_ids = [student.get('id_estudiante') for student in students]
 
     res = insert_fails(students_ids,group_id,module_id,period,current_date)
+    #res = ''
     if res:
+        if res.args[0] == 1062:
+            return jsonify({'error':'Ya se han insertado las inasistencias'}),409
+
         return jsonify({'error':f'Ha ocurrido un error al insertar las inasistencias:\n{res}'}),500
     return jsonify({'response':'ok'})
 
@@ -250,7 +265,7 @@ def aprove_justification():
 
     if res:
         print(res)
-        return jsonify({'error':str(res)}),500
+        return jsonify({'error':'Ha ocurrido un error'}),500
     
     return jsonify({'response':'Operacion realizada correctamente'}),200
 
@@ -330,15 +345,19 @@ def generate_report():
         student['asistencias'] = 0
         student['faltas'] = 0
 
-    for asistencia in data['asistencias']:
-        student_id = asistencia['id_estudiante']
-        if student_id in students_dict:
-            students_dict[student_id]['asistencias'] += asistencia['asistencias']
+    if data['asistencias']:
 
-    for inasistencia in data['inasistencias']:
-        student_id = inasistencia['id_estudiante']
-        if student_id in students_dict:
-            students_dict[student_id]['faltas'] = inasistencia['inasistencias']
+        for asistencia in data['asistencias']:
+            student_id = asistencia['id_estudiante']
+            if student_id in students_dict:
+                students_dict[student_id]['asistencias'] += asistencia['asistencias']
+
+    if data['inasistencias']:
+
+        for inasistencia in data['inasistencias']:
+            student_id = inasistencia['id_estudiante']
+            if student_id in students_dict:
+                students_dict[student_id]['faltas'] = inasistencia['inasistencias']
 
     resultado = [
         {
