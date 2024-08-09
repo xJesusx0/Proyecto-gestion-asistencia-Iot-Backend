@@ -1,7 +1,6 @@
 CREATE TABLE facultades (
   id_facultad INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
-  decano VARCHAR(100)
+  nombre VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE programas (
