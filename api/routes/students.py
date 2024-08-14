@@ -5,7 +5,7 @@ import dropbox
 
 from ..config import *
 
-from Database.fails import get_fails_by_student,insert_justification,get_fails_by_id_and_group,change_justification_state
+from Database.fails import get_fails_by_student,insert_justification,get_fails_by_id_and_group_,change_justification_state
 from Database.students import *
 from Database.attendances import *
 from Database import encode_time
@@ -165,7 +165,7 @@ def get_student_fails_by_group():
     if not group_id or not module_id or not period or not student_id:
         return jsonify({'error':'Hacen falta argumentos'}),400
     
-    fails = get_fails_by_id_and_group(student_id,group_id,module_id,period)
+    fails = get_fails_by_id_and_group_(student_id,group_id,module_id,period)
     fails_json = encode_time(fails)
     print(fails_json)
     print(student_id)
