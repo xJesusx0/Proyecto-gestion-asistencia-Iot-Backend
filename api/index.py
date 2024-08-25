@@ -19,7 +19,7 @@ CORS(app)
 @app.errorhandler(404)
 def page_not_found(e):
     return jsonify({'error':404,'response':'Ruta no encontrada'}), 404
-
+#
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(students_bp)
