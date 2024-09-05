@@ -4,7 +4,7 @@ VALUES
     ('Profesor', 'Rol para los profesores'),
     ('Estudiante', 'Rol para los estudiantes');
 
-insert into facultades(nombre,decano) values ('Ingenierias','Piedad Marchena Villanueva');
+insert into facultades(nombre) values ('Ingenierias');
 
 insert into programas (nombre,fkid_facultad,lugar_de_oferta,modalidad,duracion) values ('Técnica Profesional en Mantenimiento de Sistemas Informáticos',1,'Soledad','Presencial',5);
 
